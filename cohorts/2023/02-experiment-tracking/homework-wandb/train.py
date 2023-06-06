@@ -52,10 +52,19 @@ def run_train(
     mse = mean_squared_error(y_val, y_pred, squared=False)
     # TODO: Log `mse` to Weights & Biases under the key `"MSE"`
 
+    wandb.log({
+        "mse":mse
+    })
+
     with open("regressor.pkl", "wb") as f:
         pickle.dump(rf, f)
+    # Save your model
 
-    # TODO: Log `regressor.pkl` as an artifact of type `model`
+    # Log your model as a versioned file to Weights & Biases Artifact
+    artifact = wandb.Artifact(f"random-forest-regression-model", type="model")
+    artifact.add_file("regressor.pkl")
+    wandb.log_artifact(artifact)
+    wandb.finish()
 
 
 if __name__ == "__main__":
